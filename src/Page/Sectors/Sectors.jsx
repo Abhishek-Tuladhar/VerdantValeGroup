@@ -12,6 +12,7 @@ import {
     ChevronRight,
     X,
 } from "lucide-react";
+import { useActiveSector } from "../../context/ActiveSectorContext";
 
 /* -------------------------------------------------------------------------- */
 /* Data                                                                       */
@@ -398,6 +399,7 @@ function SectorModal({ sector, onClose }) {
 export default function Sectors() {
     const [activeIndex, setActiveIndex] = useState(DEFAULT_SECTOR_INDEX);
     const [openSector, setOpenSector] = useState(null);
+    const { setActiveSector } = useActiveSector();
 
     const trackRef = useRef(null);
     const sectionRef = useRef(null);
@@ -528,7 +530,14 @@ export default function Sectors() {
             raf = requestAnimationFrame(() => {
                 const idx = nearestCardIndex();
                 const real = ((idx % LEN) + LEN) % LEN;
-                setActiveIndex((prev) => (prev === real ? prev : real));
+
+                setActiveIndex((prev) => {
+                    if (prev !== real) {
+                        // Push the real sector title up to the header
+                        setActiveSector(SECTORS[real].title);
+                    }
+                    return real;
+                });
 
                 const middleFirst = MID_COPY * LEN;
                 const middleLast = middleFirst + LEN - 1;
@@ -575,6 +584,11 @@ export default function Sectors() {
         };
     }, [jumpToCard, nearestCardIndex, smoothScrollToCard, measureCenters]);
 
+    useEffect(() => {
+        setActiveSector(SECTORS[DEFAULT_SECTOR_INDEX].title);
+    }, [setActiveSector]);
+
+
     /* ------------------------------------------------------------------------ */
     /* Navigation (arrows + dots)                                               */
     /* ------------------------------------------------------------------------ */
@@ -584,6 +598,7 @@ export default function Sectors() {
         const targetTrackIdx = MID_COPY * LEN + next;
 
         setActiveIndex(next);
+        setActiveSector(SECTORS[next].title);
         smoothScrollToCard(targetTrackIdx);
     };
 
@@ -595,6 +610,7 @@ export default function Sectors() {
         if (realIndex === activeIndex) return;
 
         setActiveIndex(realIndex);
+        setActiveSector(SECTORS[realIndex].title);
 
         // Recenter whichever clone was clicked.
         smoothScrollToCard(trackIdx);
@@ -614,6 +630,7 @@ export default function Sectors() {
 
     const handleOpenSector = (sector, realIndex, trackIdx) => {
         setActiveIndex(realIndex);
+        setActiveSector(sector.title);
 
         const normalizedTrackIdx = MID_COPY * LEN + realIndex;
 

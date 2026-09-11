@@ -4,13 +4,13 @@ import {
     Home,
     Info,
     Layers,
-    Leaf,
     Menu,
     X,
     ArrowUpRight,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { useActiveSector } from "../../context/ActiveSectorContext";
 import logo from "../../assets/Images/logo.png";
 
 function cn(...inputs) {
@@ -43,6 +43,11 @@ export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeHref, setActiveHref] = useState("#home");
 
+    const { activeSector } = useActiveSector();
+
+    /* ---------------------------------------------------------------- */
+    /* Scroll shadow                                                     */
+    /* ---------------------------------------------------------------- */
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 12);
         onScroll();
@@ -50,6 +55,41 @@ export default function Header() {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
+    /* ---------------------------------------------------------------- */
+    /* Scroll spy — highlight nav based on vertical page scroll          */
+    /* ---------------------------------------------------------------- */
+    useEffect(() => {
+        const sections = NAV_ITEMS
+            .map((item) => document.querySelector(item.href))
+            .filter(Boolean);
+
+        if (!sections.length) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                // Pick the entry closest to the top of the viewport
+                const visible = entries
+                    .filter((e) => e.isIntersecting)
+                    .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+                if (visible.length) {
+                    setActiveHref(`#${visible[0].target.id}`);
+                }
+            },
+            {
+                // Trigger when section occupies the middle band of the viewport
+                rootMargin: "-40% 0px -55% 0px",
+                threshold: 0,
+            }
+        );
+
+        sections.forEach((s) => observer.observe(s));
+        return () => observer.disconnect();
+    }, []);
+
+    /* ---------------------------------------------------------------- */
+    /* Lock body scroll when mobile menu open                            */
+    /* ---------------------------------------------------------------- */
     useEffect(() => {
         document.body.style.overflow = isMenuOpen ? "hidden" : "";
         return () => {
@@ -57,6 +97,9 @@ export default function Header() {
         };
     }, [isMenuOpen]);
 
+    /* ---------------------------------------------------------------- */
+    /* Close menu on Escape                                              */
+    /* ---------------------------------------------------------------- */
     useEffect(() => {
         const handleEscape = (event) => {
             if (event.key === "Escape") setIsMenuOpen(false);
@@ -68,6 +111,11 @@ export default function Header() {
     const closeMenu = () => setIsMenuOpen(false);
     const toggleMenu = () => setIsMenuOpen((open) => !open);
 
+    /* ---------------------------------------------------------------- */
+    /* Label shown under "Current Sectors" when that section is active   */
+    /* ---------------------------------------------------------------- */
+    const sectorsItem = NAV_ITEMS.find((i) => i.href === "#sectors");
+
     return (
         <header
             className={cn(
@@ -77,7 +125,6 @@ export default function Header() {
                     : "bg-transparent"
             )}
         >
-            {/* Header bar */}
             <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:h-[72px] sm:px-6 lg:h-20 lg:px-10">
                 {/* Logo */}
                 <a
@@ -86,65 +133,62 @@ export default function Header() {
                     aria-label="Verdant Vale Group — Home"
                     className="group relative z-[70] flex items-center gap-3"
                 >
-                    {/* Logo mark */}
                     <span
                         className="
-      relative grid h-10 w-10 shrink-0 place-items-center
-      overflow-hidden rounded-full
-      bg-[#0B1F33]
-      transition-all duration-500
-      group-hover:scale-105
-      group-hover:shadow-[0_6px_20px_rgba(11,31,51,0.18)]
-    "
+                            relative grid h-10 w-10 shrink-0 place-items-center
+                            overflow-hidden rounded-full
+                            bg-[#0B1F33]
+                            transition-all duration-500
+                            group-hover:scale-105
+                            group-hover:shadow-[0_6px_20px_rgba(11,31,51,0.18)]
+                        "
                     >
                         <img
                             src={logo}
                             alt=""
                             className="
-        relative z-10 h-7 w-7
-        object-contain
-        transition-transform duration-500
-        ease-out
-        group-hover:scale-105
-      "
+                                relative z-10 h-7 w-7
+                                object-contain
+                                transition-transform duration-500
+                                ease-out
+                                group-hover:scale-105
+                            "
                         />
                     </span>
 
-                    {/* Wordmark */}
                     <span className="flex flex-col">
                         <span
                             className="
-        relative w-fit
-        font-serif text-[1.08rem]
-        font-medium leading-none
-        tracking-[-0.025em]
-        text-[#0B1F33]
-      "
+                                relative w-fit
+                                font-serif text-[1.08rem]
+                                font-medium leading-none
+                                tracking-[-0.025em]
+                                text-[#0B1F33]
+                            "
                         >
                             Verdant Vale
-
                             <span
                                 className="
-          absolute -bottom-1 left-0
-          h-px w-full origin-left scale-x-0
-          bg-[#0B1F33]
-          transition-transform duration-500
-          ease-[cubic-bezier(0.16,1,0.3,1)]
-          group-hover:scale-x-100
-        "
+                                    absolute -bottom-1 left-0
+                                    h-px w-full origin-left scale-x-0
+                                    bg-[#0B1F33]
+                                    transition-transform duration-500
+                                    ease-[cubic-bezier(0.16,1,0.3,1)]
+                                    group-hover:scale-x-100
+                                "
                             />
                         </span>
 
                         <span
                             className="
-        mt-1.5
-        text-[0.58rem]
-        font-medium uppercase
-        tracking-[0.24em]
-        text-[#7C9473]
-        transition-colors duration-300
-        group-hover:text-[#0B1F33]
-      "
+                                mt-1.5
+                                text-[0.58rem]
+                                font-medium uppercase
+                                tracking-[0.24em]
+                                text-[#7C9473]
+                                transition-colors duration-300
+                                group-hover:text-[#0B1F33]
+                            "
                         >
                             Group
                         </span>
@@ -159,6 +203,11 @@ export default function Header() {
                     {NAV_ITEMS.map((item) => {
                         const isActive = activeHref === item.href;
                         const Icon = item.icon;
+                        const showSectorName =
+                            isActive &&
+                            item.href === sectorsItem?.href &&
+                            activeSector;
+
                         return (
                             <a
                                 key={item.href}
@@ -175,11 +224,41 @@ export default function Header() {
                                     <motion.span
                                         layoutId="nav-pill"
                                         className="absolute inset-0 rounded-full bg-[#1B3A2B]"
-                                        transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 32,
+                                        }}
                                     />
                                 )}
-                                <Icon className="relative z-10 h-4 w-4" strokeWidth={1.75} />
-                                <span className="relative z-10">{item.label}</span>
+
+                                <Icon
+                                    className="relative z-10 h-4 w-4"
+                                    strokeWidth={1.75}
+                                />
+
+                                <span className="relative z-10 flex items-center gap-2">
+                                    {item.label}
+
+                                    {/* Live sector badge */}
+                                    {showSectorName && (
+                                        <motion.span
+                                            key={activeSector}
+                                            initial={{ opacity: 0, y: 4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -4 }}
+                                            transition={{ duration: 0.25 }}
+                                            className="
+                                                hidden rounded-full bg-white/15
+                                                px-2 py-0.5 text-[10px] font-medium
+                                                uppercase tracking-[0.12em] text-white/90
+                                                2xl:inline-flex
+                                            "
+                                        >
+                                            {activeSector}
+                                        </motion.span>
+                                    )}
+                                </span>
                             </a>
                         );
                     })}
@@ -189,7 +268,9 @@ export default function Header() {
                 <button
                     type="button"
                     onClick={toggleMenu}
-                    aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                    aria-label={
+                        isMenuOpen ? "Close navigation menu" : "Open navigation menu"
+                    }
                     aria-expanded={isMenuOpen}
                     className="relative z-[70] flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[#1B3A2B]/10 bg-white/70 text-[#1B3A2B] shadow-sm backdrop-blur-xl transition-all duration-300 hover:bg-white active:scale-90 xl:hidden"
                 >
@@ -241,7 +322,6 @@ export default function Header() {
                         "radial-gradient(circle at 10% 0%, #1E3D5C 0%, #14304A 35%, #0B1F33 75%)",
                 }}
             >
-                {/* Menu header */}
                 <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6 sm:py-5">
                     <div>
                         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">
@@ -253,10 +333,12 @@ export default function Header() {
                     </div>
                 </div>
 
-                {/* Nav items */}
                 <nav className="p-3 sm:p-4">
                     {NAV_ITEMS.map((item, index) => {
                         const Icon = item.icon;
+                        const isSectors = item.href === "#sectors";
+                        const isActive = activeHref === item.href;
+
                         return (
                             <a
                                 key={item.label}
@@ -266,13 +348,16 @@ export default function Header() {
                                     closeMenu();
                                 }}
                                 style={{
-                                    transitionDelay: isMenuOpen ? `${100 + index * 60}ms` : "0ms",
+                                    transitionDelay: isMenuOpen
+                                        ? `${100 + index * 60}ms`
+                                        : "0ms",
                                 }}
                                 className={cn(
                                     "group flex items-center justify-between rounded-2xl px-3 py-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/10 active:scale-[0.98]",
                                     isMenuOpen
                                         ? "translate-y-0 opacity-100"
-                                        : "translate-y-3 opacity-0"
+                                        : "translate-y-3 opacity-0",
+                                    isActive && "bg-white/10"
                                 )}
                             >
                                 <div className="flex items-center gap-3">
@@ -284,7 +369,9 @@ export default function Header() {
                                             {item.label}
                                         </span>
                                         <span className="mt-0.5 text-[11px] text-white/60 sm:text-xs">
-                                            {item.description}
+                                            {isSectors && activeSector
+                                                ? activeSector
+                                                : item.description}
                                         </span>
                                     </div>
                                 </div>
@@ -297,7 +384,6 @@ export default function Header() {
                     })}
                 </nav>
 
-                {/* Menu footer */}
                 <div className="mx-3 mb-3 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 sm:mx-4 sm:mb-4">
                     <div className="flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-[#0B1F33] shadow-[0_0_0_4px_rgba(124,148,115,0.18)]" />
@@ -308,17 +394,13 @@ export default function Header() {
 
                     <span
                         className="
-            grid h-7 w-7 shrink-0 place-items-center
-            overflow-hidden rounded-full
-            bg-white/10 ring-1 ring-white/15
-        "
+                            grid h-7 w-7 shrink-0 place-items-center
+                            overflow-hidden rounded-full
+                            bg-white/10 ring-1 ring-white/15
+                        "
                         aria-label="Verdant Vale Group"
                     >
-                        <img
-                            src={logo}
-                            alt=""
-                            className="h-5 w-5 object-contain"
-                        />
+                        <img src={logo} alt="" className="h-5 w-5 object-contain" />
                     </span>
                 </div>
             </div>

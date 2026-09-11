@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { ActiveSectorProvider } from "./context/ActiveSectorContext";
 import Header from "./components/Header/Header";
 import Hero from "./Page/Hero/Hero";
 import IntroScreen from "./components/Introscreen/Introscreen";
@@ -14,11 +15,13 @@ function App() {
 
   return (
     <IntroScreen>
-      <Header />
-      <Hero />
-      <AboutUs />
-      <OurMission />
-      <Sectors />
+      <ActiveSectorProvider>
+        <Header />
+        <Hero />
+        <AboutUs />
+        <OurMission />
+        <Sectors />
+      </ActiveSectorProvider>
     </IntroScreen>
   );
 }
