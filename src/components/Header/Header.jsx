@@ -198,7 +198,7 @@ export default function Header() {
                 {/* Centered nav — desktop */}
                 <nav
                     aria-label="Primary"
-                    className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-full border border-[#1B3A2B]/10 bg-white/40 p-1.5 xl:flex"
+                    className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-full border border-[#0B1F33]/10 bg-white/40 p-1.5 xl:flex"
                 >
                     {NAV_ITEMS.map((item) => {
                         const isActive = activeHref === item.href;
@@ -217,13 +217,13 @@ export default function Header() {
                                     "relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
                                     isActive
                                         ? "text-[#F6F3EA]"
-                                        : "text-[#1B3A2B]/70 hover:text-[#1B3A2B]"
+                                        : "text-[#0B1F33]/70 hover:text-[#0B1F33]"
                                 )}
                             >
                                 {isActive && (
                                     <motion.span
                                         layoutId="nav-pill"
-                                        className="absolute inset-0 rounded-full bg-[#1B3A2B]"
+                                        className="absolute inset-0 rounded-full bg-[#0B1F33]"
                                         transition={{
                                             type: "spring",
                                             stiffness: 400,
@@ -272,7 +272,7 @@ export default function Header() {
                         isMenuOpen ? "Close navigation menu" : "Open navigation menu"
                     }
                     aria-expanded={isMenuOpen}
-                    className="relative z-[70] flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[#1B3A2B]/10 bg-white/70 text-[#1B3A2B] shadow-sm backdrop-blur-xl transition-all duration-300 hover:bg-white active:scale-90 xl:hidden"
+                    className="relative z-[70] flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[#0B1F33]/10 bg-white/70 text-[#0B1F33] shadow-sm backdrop-blur-xl transition-all duration-300 hover:bg-white active:scale-90 xl:hidden"
                 >
                     <Menu
                         size={21}
