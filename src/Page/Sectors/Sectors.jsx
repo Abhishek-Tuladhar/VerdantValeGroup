@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { useActiveSector } from "../../context/ActiveSectorContext";
+import bannerImage from "../../assets/Images/MarchStreetMediaLogo.png";
 
 /* -------------------------------------------------------------------------- */
 /* Data                                                                       */
@@ -78,8 +79,7 @@ const SECTORS = [
     description:
       "Innovative technology services and media content creation that help solve modern world problems.",
     icon: Cpu,
-    image:
-      "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?fm=jpg&q=80&w=1600&auto=format&fit=crop",
+    image: bannerImage,
     paragraphs: [
       "VerdantVale Entertainment is a premier Media and Technology powerhouse. We deliver comprehensive technical solutions, including reliable web hosting, search engine optimization (SEO), custom software engineering, and mobile app development. Deeply embedded in the future of technology, we also offer cutting-edge AI services that optimize digital experiences and push the boundaries of modern innovation.",
       "On the media and entertainment front, we produce cinematic blockbuster movies, high-quality TV productions, and engaging entertainment content designed for global audiences. From immersive virtual reality to large-scale live music festivals and cultural events, our sustainable entertainment services celebrate artistic expression and inspire viewers worldwide while supporting both established and emerging talent.",
@@ -119,7 +119,7 @@ const TOTAL = LEN * COPIES;
 const DEFAULT_SECTOR_INDEX = 0;
 
 /* -------------------------------------------------------------------------- */
-/* Existing Network Graphic                                                   */
+/* Network Graphic                                                            */
 /* -------------------------------------------------------------------------- */
 
 function NetworkGlow({ Icon }) {
@@ -152,7 +152,12 @@ function NetworkGlow({ Icon }) {
             [220, 300],
             [180, 380],
           ].map(([cx, cy]) => (
-            <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="2.5" />
+            <circle
+              key={`${cx}-${cy}`}
+              cx={cx}
+              cy={cy}
+              r="2.5"
+            />
           ))}
         </g>
       </svg>
@@ -162,7 +167,10 @@ function NetworkGlow({ Icon }) {
       <motion.div
         initial={{ scale: 0.85, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{
+          duration: 0.6,
+          ease: [0.22, 1, 0.36, 1],
+        }}
         className="relative z-10"
       >
         <Icon
@@ -178,8 +186,21 @@ function NetworkGlow({ Icon }) {
 /* Sector Card                                                                */
 /* -------------------------------------------------------------------------- */
 
-function SectorCard({ sector, isActive, onActivate, onOpen }) {
-  const { title, description, icon: Icon, image } = sector;
+function SectorCard({
+  sector,
+  isActive,
+  onActivate,
+  onOpen,
+}) {
+  const {
+    title,
+    description,
+    icon: Icon,
+    image,
+  } = sector;
+
+  const isMediaTechnology =
+    title === "Media & Technology";
 
   return (
     <motion.div
@@ -193,18 +214,9 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
       }}
       onClick={onActivate}
       className={`
-        group
-        relative
-        flex
-        flex-shrink-0
-        cursor-pointer
-        overflow-hidden
-        rounded-[24px]
+        group relative flex flex-shrink-0 cursor-pointer
+        overflow-hidden rounded-[24px]
         bg-[#0a3448]
-
-        /* ================================================================ */
-        /* INACTIVE CARD                                                    */
-        /* ================================================================ */
 
         h-[420px]
         w-[calc(100vw-48px)]
@@ -213,33 +225,22 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
         sm:h-[460px]
         sm:w-[380px]
 
-        md:h-[480px]
-        md:w-[400px]
-
         lg:h-[500px]
         lg:w-[380px]
-
-        /* ================================================================ */
-        /* ACTIVE CARD                                                      */
-        /* ================================================================ */
 
         ${
           isActive
             ? `
-              /* Mobile */
-              max-[767px]:h-[500px]
+              max-[767px]:h-[560px]
               max-[767px]:w-[calc(100vw-32px)]
               max-[767px]:max-w-none
 
-              /* Small tablets */
-              sm:w-[680px]
-              sm:h-[420px]
+              sm:w-[760px]
+              sm:h-[460px]
 
-              /* Tablet */
-              md:w-[780px]
-              md:h-[440px]
+              md:w-[860px]
+              md:h-[480px]
 
-              /* Desktop */
               lg:w-[960px]
               lg:h-[500px]
               lg:max-w-[78vw]
@@ -249,12 +250,31 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
       `}
     >
       {isActive ? (
+        /*
+         * IMPORTANT:
+         * This remains a ROW at every breakpoint.
+         * Left = NetworkGlow + text
+         * Right = sector image
+         */
         <div className="relative flex h-full w-full flex-row">
-          {/* ============================================================ */}
-          {/* BLURRED EXISTING BANNER GRAPHIC                              */}
-          {/* ============================================================ */}
+          {/* ====================================================== */}
+          {/* LEFT BACKGROUND / NETWORK GRAPHIC                      */}
+          {/* ====================================================== */}
 
-          <div
+          <motion.div
+            layout
+            initial={{
+              opacity: 0,
+              scale: 0.97,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            transition={{
+              duration: 0.5,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="
               absolute
               left-0
@@ -276,10 +296,8 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
               <NetworkGlow Icon={Icon} />
             </div>
 
-            {/* Dark overlay */}
             <div className="absolute inset-0 bg-[#062a3c]/60" />
 
-            {/* Fade into right image */}
             <div
               className="
                 absolute
@@ -291,16 +309,16 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
                 to-[#062a3c]
               "
             />
-          </div>
+          </motion.div>
 
-          {/* ============================================================ */}
-          {/* MAIN ACTIVE CONTENT                                           */}
-          {/* ============================================================ */}
+          {/* ====================================================== */}
+          {/* CONTENT LAYER                                           */}
+          {/* ====================================================== */}
 
           <div className="relative z-10 flex h-full w-full flex-row">
-            {/* ========================================================== */}
-            {/* LEFT — TEXT                                                 */}
-            {/* ========================================================== */}
+            {/* -------------------------------------------------- */}
+            {/* LEFT CONTENT                                         */}
+            {/* -------------------------------------------------- */}
 
             <div
               className="
@@ -313,13 +331,13 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
                 justify-between
 
                 px-5
-                py-6
+                py-7
 
                 sm:px-7
-                sm:py-7
+                sm:py-8
 
                 md:px-8
-                md:py-8
+                md:py-9
 
                 lg:px-9
                 lg:py-10
@@ -349,21 +367,18 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
                 <motion.p
                   layout="position"
                   className="
-                    mt-3
+                    mt-4
                     max-w-[410px]
                     text-xs
                     leading-5
                     text-white/75
 
-                    sm:mt-4
+                    sm:mt-5
                     sm:text-sm
                     sm:leading-6
 
                     md:text-[15px]
-                    md:leading-6
-
-                    lg:mt-5
-                    lg:leading-7
+                    md:leading-7
                   "
                 >
                   {description}
@@ -380,8 +395,10 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
                   w-fit
                   rounded-full
                   bg-white
+
                   px-5
                   py-2.5
+
                   text-xs
                   font-medium
                   text-[#0a3448]
@@ -389,24 +406,22 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
                   transition-all
                   duration-300
 
-                  hover:scale-[1.03]
-                  hover:bg-white/95
+                  hover:scale-[1.02]
+                  hover:opacity-90
                   active:scale-95
 
-                  sm:px-5
+                  sm:px-6
                   sm:py-3
                   sm:text-sm
-
-                  md:px-6
                 "
               >
                 Read More
               </button>
             </div>
 
-            {/* ========================================================== */}
-            {/* RIGHT — MAIN SECTOR IMAGE                                   */}
-            {/* ========================================================== */}
+            {/* -------------------------------------------------- */}
+            {/* RIGHT IMAGE                                          */}
+            {/* -------------------------------------------------- */}
 
             <motion.div
               layout
@@ -435,17 +450,29 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
               <img
                 src={image}
                 alt={title}
-                className="
-                  h-full
-                  w-full
-                  object-cover
-                  transition-transform
-                  duration-700
-                  group-hover:scale-[1.025]
-                "
+                className={
+                  isMediaTechnology
+                    ? `
+                      h-full
+                      w-full
+                      object-contain
+                      p-5
+
+                      sm:p-7
+                      md:p-8
+                      lg:p-10
+                    `
+                    : `
+                      h-full
+                      w-full
+                      object-cover
+                      transition-transform
+                      duration-700
+                      group-hover:scale-[1.025]
+                    `
+                }
               />
 
-              {/* Soft blend at image edge */}
               <div
                 className="
                   absolute
@@ -458,17 +485,16 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
                 "
               />
 
-              {/* Subtle image overlay */}
               <div className="absolute inset-0 bg-black/[0.03]" />
             </motion.div>
           </div>
         </div>
       ) : (
-        /* ================================================================ */
-        /* INACTIVE CARD                                                    */
-        /* ================================================================ */
+        /* ========================================================== */
+        /* INACTIVE CARD                                              */
+        /* ========================================================== */
 
-        <div className="flex h-full w-full flex-col justify-between p-6 sm:p-8">
+        <div className="flex h-full w-full flex-col justify-between p-7 sm:p-8">
           <div>
             <motion.h3
               layout="position"
@@ -515,7 +541,6 @@ function SectorCard({ sector, isActive, onActivate, onOpen }) {
               text-sm
               font-medium
               text-[#0a3448]
-
               transition-all
               duration-300
 
@@ -542,12 +567,14 @@ function SectorModal({ sector, onClose }) {
   const closeButtonRef = useRef(null);
 
   useEffect(() => {
-    const original = document.body.style.overflow;
+    const original =
+      document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = original;
+      document.body.style.overflow =
+        original;
     };
   }, []);
 
@@ -558,21 +585,39 @@ function SectorModal({ sector, onClose }) {
       }
     };
 
-    document.addEventListener("keydown", onKey);
+    document.addEventListener(
+      "keydown",
+      onKey,
+    );
 
-    const timeout = setTimeout(() => {
-      closeButtonRef.current?.focus();
-    }, 50);
+    const timeout = setTimeout(
+      () =>
+        closeButtonRef.current?.focus(),
+      50,
+    );
 
     return () => {
-      document.removeEventListener("keydown", onKey);
+      document.removeEventListener(
+        "keydown",
+        onKey,
+      );
+
       clearTimeout(timeout);
     };
   }, [onClose]);
 
   if (!sector) return null;
 
-  const { title, description, icon: Icon, image, paragraphs } = sector;
+  const {
+    title,
+    description,
+    icon: Icon,
+    image,
+    paragraphs,
+  } = sector;
+
+  const isMediaTechnology =
+    title === "Media & Technology";
 
   return (
     <motion.div
@@ -618,7 +663,9 @@ function SectorModal({ sector, onClose }) {
           duration: 0.4,
           ease: [0.22, 1, 0.36, 1],
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) =>
+          e.stopPropagation()
+        }
         className="
           relative
           flex
@@ -637,7 +684,7 @@ function SectorModal({ sector, onClose }) {
           md:flex-row
         "
       >
-        {/* Close button */}
+        {/* Close */}
 
         <button
           ref={closeButtonRef}
@@ -667,10 +714,15 @@ function SectorModal({ sector, onClose }) {
             active:scale-95
           "
         >
-          <X size={20} strokeWidth={1.8} />
+          <X
+            size={20}
+            strokeWidth={1.8}
+          />
         </button>
 
-        {/* Modal image */}
+        {/* ====================================================== */}
+        {/* MODAL IMAGE                                             */}
+        {/* ====================================================== */}
 
         <div
           className="
@@ -686,7 +738,27 @@ function SectorModal({ sector, onClose }) {
             md:w-[42%]
           "
         >
-          <img src={image} alt={title} className="h-full w-full object-cover" />
+          <img
+            src={image}
+            alt={title}
+            className={
+              isMediaTechnology
+                ? `
+                  h-full
+                  w-full
+                  object-contain
+                  p-6
+
+                  sm:p-8
+                  md:p-10
+                `
+                : `
+                  h-full
+                  w-full
+                  object-cover
+                `
+            }
+          />
 
           <div
             className="
@@ -725,11 +797,22 @@ function SectorModal({ sector, onClose }) {
               sm:w-14
             "
           >
-            <Icon className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={1.5} />
+            <Icon
+              className="
+                h-6
+                w-6
+
+                sm:h-7
+                sm:w-7
+              "
+              strokeWidth={1.5}
+            />
           </div>
         </div>
 
-        {/* Modal content */}
+        {/* ====================================================== */}
+        {/* MODAL CONTENT                                           */}
+        {/* ====================================================== */}
 
         <div
           className="
@@ -771,7 +854,6 @@ function SectorModal({ sector, onClose }) {
               text-[#0B1F33]
 
               sm:text-3xl
-
               md:text-4xl
             "
           >
@@ -803,9 +885,13 @@ function SectorModal({ sector, onClose }) {
               sm:mt-8
             "
           >
-            {paragraphs.map((text, i) => (
-              <p key={i}>{text}</p>
-            ))}
+            {paragraphs.map(
+              (text, i) => (
+                <p key={i}>
+                  {text}
+                </p>
+              ),
+            )}
           </div>
 
           <div
@@ -828,7 +914,6 @@ function SectorModal({ sector, onClose }) {
                 text-sm
                 font-medium
                 text-white
-
                 transition-all
                 duration-300
 
@@ -851,284 +936,483 @@ function SectorModal({ sector, onClose }) {
 /* -------------------------------------------------------------------------- */
 
 export default function Sectors() {
-  const [activeIndex, setActiveIndex] = useState(DEFAULT_SECTOR_INDEX);
-  const [openSector, setOpenSector] = useState(null);
+  const [
+    activeIndex,
+    setActiveIndex,
+  ] = useState(
+    DEFAULT_SECTOR_INDEX,
+  );
 
-  const { setActiveSector } = useActiveSector();
+  const [
+    openSector,
+    setOpenSector,
+  ] = useState(null);
 
-  const trackRef = useRef(null);
-  const sectionRef = useRef(null);
+  const {
+    setActiveSector,
+  } = useActiveSector();
 
-  const isJumpingRef = useRef(false);
-  const isSmoothRef = useRef(false);
-  const centersRef = useRef([]);
+  const trackRef =
+    useRef(null);
 
-  const snapTimerRef = useRef(0);
+  const sectionRef =
+    useRef(null);
+
+  const isJumpingRef =
+    useRef(false);
+
+  const isSmoothRef =
+    useRef(false);
+
+  const centersRef =
+    useRef([]);
+
+  const snapTimerRef =
+    useRef(0);
 
   /* ------------------------------------------------------------------------ */
   /* Measure card centers                                                     */
   /* ------------------------------------------------------------------------ */
 
-  const measureCenters = useCallback(() => {
-    const track = trackRef.current;
+  const measureCenters =
+    useCallback(() => {
+      const track =
+        trackRef.current;
 
-    if (!track) return;
+      if (!track) return;
 
-    const centers = [];
+      const centers = [];
 
-    for (let i = 0; i < track.children.length; i++) {
-      const card = track.children[i];
+      for (
+        let i = 0;
+        i < track.children.length;
+        i++
+      ) {
+        const c =
+          track.children[i];
 
-      centers.push(card.offsetLeft + card.offsetWidth / 2);
-    }
-
-    centersRef.current = centers;
-  }, []);
-
-  /* ------------------------------------------------------------------------ */
-  /* Find nearest card                                                        */
-  /* ------------------------------------------------------------------------ */
-
-  const nearestCardIndex = useCallback(() => {
-    const track = trackRef.current;
-
-    if (!track) return 0;
-
-    const center = track.scrollLeft + track.clientWidth / 2;
-
-    const centers = centersRef.current;
-
-    let best = 0;
-    let bestDist = Infinity;
-
-    for (let i = 0; i < centers.length; i++) {
-      const distance = Math.abs(centers[i] - center);
-
-      if (distance < bestDist) {
-        bestDist = distance;
-        best = i;
+        centers.push(
+          c.offsetLeft +
+            c.offsetWidth / 2,
+        );
       }
-    }
 
-    return best;
-  }, []);
+      centersRef.current =
+        centers;
+    }, []);
+
+  /* ------------------------------------------------------------------------ */
+  /* Nearest card to viewport center                                          */
+  /* ------------------------------------------------------------------------ */
+
+  const nearestCardIndex =
+    useCallback(() => {
+      const track =
+        trackRef.current;
+
+      if (!track) return 0;
+
+      const center =
+        track.scrollLeft +
+        track.clientWidth / 2;
+
+      const centers =
+        centersRef.current;
+
+      let best = 0;
+      let bestDist = Infinity;
+
+      for (
+        let i = 0;
+        i < centers.length;
+        i++
+      ) {
+        const d =
+          Math.abs(
+            centers[i] - center,
+          );
+
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      }
+
+      return best;
+    }, []);
 
   /* ------------------------------------------------------------------------ */
   /* Instant jump                                                             */
   /* ------------------------------------------------------------------------ */
 
-  const jumpToCard = useCallback((trackIdx) => {
-    const track = trackRef.current;
-    const centers = centersRef.current;
+  const jumpToCard =
+    useCallback(
+      (trackIdx) => {
+        const track =
+          trackRef.current;
 
-    if (!track || centers[trackIdx] == null) {
-      return;
-    }
+        const centers =
+          centersRef.current;
 
-    const target = centers[trackIdx] - track.clientWidth / 2;
+        if (
+          !track ||
+          centers[trackIdx] == null
+        ) {
+          return;
+        }
 
-    isJumpingRef.current = true;
+        const target =
+          centers[trackIdx] -
+          track.clientWidth / 2;
 
-    track.scrollLeft = Math.max(0, target);
+        isJumpingRef.current =
+          true;
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        isJumpingRef.current = false;
-      });
-    });
-  }, []);
+        track.scrollLeft =
+          Math.max(0, target);
+
+        requestAnimationFrame(
+          () => {
+            requestAnimationFrame(
+              () => {
+                isJumpingRef.current =
+                  false;
+              },
+            );
+          },
+        );
+      },
+      [],
+    );
 
   /* ------------------------------------------------------------------------ */
-  /* Smooth scroll                                                            */
+  /* Smooth scroll to card                                                    */
   /* ------------------------------------------------------------------------ */
 
-  const smoothScrollToCard = useCallback((trackIdx) => {
-    const track = trackRef.current;
-    const centers = centersRef.current;
+  const smoothScrollToCard =
+    useCallback(
+      (trackIdx) => {
+        const track =
+          trackRef.current;
 
-    if (!track || centers[trackIdx] == null) {
-      return;
-    }
+        const centers =
+          centersRef.current;
 
-    const target = Math.max(0, centers[trackIdx] - track.clientWidth / 2);
+        if (
+          !track ||
+          centers[trackIdx] == null
+        ) {
+          return;
+        }
 
-    isSmoothRef.current = true;
+        const target =
+          Math.max(
+            0,
+            centers[trackIdx] -
+              track.clientWidth / 2,
+          );
 
-    track.scrollTo({
-      left: target,
-      behavior: "smooth",
-    });
+        isSmoothRef.current =
+          true;
 
-    window.clearTimeout(smoothScrollToCard._t);
+        track.scrollTo({
+          left: target,
+          behavior: "smooth",
+        });
 
-    smoothScrollToCard._t = window.setTimeout(() => {
-      isSmoothRef.current = false;
-    }, 600);
-  }, []);
+        window.clearTimeout(
+          smoothScrollToCard._t,
+        );
+
+        smoothScrollToCard._t =
+          window.setTimeout(() => {
+            isSmoothRef.current =
+              false;
+          }, 600);
+      },
+      [],
+    );
 
   /* ------------------------------------------------------------------------ */
   /* Initial centering                                                        */
   /* ------------------------------------------------------------------------ */
 
   useLayoutEffect(() => {
-    const raf = requestAnimationFrame(() => {
-      measureCenters();
+    const raf =
+      requestAnimationFrame(() => {
+        measureCenters();
 
-      const initial = MID_COPY * LEN + DEFAULT_SECTOR_INDEX;
+        const initial =
+          MID_COPY * LEN +
+          DEFAULT_SECTOR_INDEX;
 
-      jumpToCard(initial);
-    });
+        jumpToCard(initial);
+      });
 
     const onResize = () => {
       measureCenters();
 
-      const current = nearestCardIndex();
+      const current =
+        nearestCardIndex();
 
       jumpToCard(current);
     };
 
-    window.addEventListener("resize", onResize);
+    window.addEventListener(
+      "resize",
+      onResize,
+    );
 
     return () => {
       cancelAnimationFrame(raf);
 
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener(
+        "resize",
+        onResize,
+      );
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ------------------------------------------------------------------------ */
-  /* Infinite scroll + snap                                                   */
+  /* Infinite scroll + mobile snap                                            */
   /* ------------------------------------------------------------------------ */
 
   useEffect(() => {
-    const track = trackRef.current;
+    const track =
+      trackRef.current;
 
     if (!track) return;
 
     let raf = 0;
 
     const handleScroll = () => {
-      if (isJumpingRef.current || isSmoothRef.current) {
+      if (
+        isJumpingRef.current ||
+        isSmoothRef.current
+      ) {
         return;
       }
 
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(
+        raf,
+      );
 
-      raf = requestAnimationFrame(() => {
-        const idx = nearestCardIndex();
+      raf =
+        requestAnimationFrame(
+          () => {
+            const idx =
+              nearestCardIndex();
 
-        const real = ((idx % LEN) + LEN) % LEN;
+            const real =
+              ((idx % LEN) + LEN) %
+              LEN;
 
-        setActiveIndex((prev) => {
-          if (prev !== real) {
-            setActiveSector(SECTORS[real].title);
-          }
+            setActiveIndex(
+              (prev) => {
+                if (
+                  prev !== real
+                ) {
+                  setActiveSector(
+                    SECTORS[real]
+                      .title,
+                  );
+                }
 
-          return real;
-        });
+                return real;
+              },
+            );
 
-        const middleFirst = MID_COPY * LEN;
+            const middleFirst =
+              MID_COPY * LEN;
 
-        const middleLast = middleFirst + LEN - 1;
+            const middleLast =
+              middleFirst +
+              LEN -
+              1;
 
-        if (idx < middleFirst) {
-          jumpToCard(idx + LEN);
-        } else if (idx > middleLast) {
-          jumpToCard(idx - LEN);
-        }
-      });
+            if (
+              idx <
+              middleFirst
+            ) {
+              jumpToCard(
+                idx + LEN,
+              );
+            } else if (
+              idx >
+              middleLast
+            ) {
+              jumpToCard(
+                idx - LEN,
+              );
+            }
+          },
+        );
 
-      window.clearTimeout(snapTimerRef.current);
+      window.clearTimeout(
+        snapTimerRef.current,
+      );
 
-      snapTimerRef.current = window.setTimeout(() => {
-        if (isJumpingRef.current || isSmoothRef.current) {
-          return;
-        }
+      snapTimerRef.current =
+        window.setTimeout(
+          () => {
+            if (
+              isJumpingRef.current ||
+              isSmoothRef.current
+            ) {
+              return;
+            }
 
-        measureCenters();
+            measureCenters();
 
-        const idx = nearestCardIndex();
+            const idx =
+              nearestCardIndex();
 
-        const centers = centersRef.current;
+            const centers =
+              centersRef.current;
 
-        if (centers[idx] == null) {
-          return;
-        }
+            if (
+              centers[idx] == null
+            ) {
+              return;
+            }
 
-        const target = Math.max(0, centers[idx] - track.clientWidth / 2);
+            const target =
+              Math.max(
+                0,
+                centers[idx] -
+                  track.clientWidth /
+                    2,
+              );
 
-        if (Math.abs(track.scrollLeft - target) > 4) {
-          smoothScrollToCard(idx);
-        }
-      }, 140);
+            if (
+              Math.abs(
+                track.scrollLeft -
+                  target,
+              ) > 4
+            ) {
+              smoothScrollToCard(
+                idx,
+              );
+            }
+          },
+          140,
+        );
     };
 
-    track.addEventListener("scroll", handleScroll, { passive: true });
+    track.addEventListener(
+      "scroll",
+      handleScroll,
+      {
+        passive: true,
+      },
+    );
 
     return () => {
-      track.removeEventListener("scroll", handleScroll);
+      track.removeEventListener(
+        "scroll",
+        handleScroll,
+      );
 
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(
+        raf,
+      );
 
-      window.clearTimeout(snapTimerRef.current);
+      window.clearTimeout(
+        snapTimerRef.current,
+      );
     };
   }, [
     jumpToCard,
     nearestCardIndex,
     smoothScrollToCard,
     measureCenters,
-    setActiveSector,
   ]);
 
-  /* ------------------------------------------------------------------------ */
-  /* Set default active sector                                                */
-  /* ------------------------------------------------------------------------ */
-
   useEffect(() => {
-    setActiveSector(SECTORS[DEFAULT_SECTOR_INDEX].title);
+    setActiveSector(
+      SECTORS[
+        DEFAULT_SECTOR_INDEX
+      ].title,
+    );
   }, [setActiveSector]);
 
   /* ------------------------------------------------------------------------ */
   /* Navigation                                                               */
   /* ------------------------------------------------------------------------ */
 
-  const goTo = (realIndex) => {
-    const next = ((realIndex % LEN) + LEN) % LEN;
+  const goTo = (
+    realIndex,
+  ) => {
+    const next =
+      ((realIndex % LEN) +
+        LEN) %
+      LEN;
 
-    const targetTrackIdx = MID_COPY * LEN + next;
+    const targetTrackIdx =
+      MID_COPY * LEN +
+      next;
 
     setActiveIndex(next);
 
-    setActiveSector(SECTORS[next].title);
+    setActiveSector(
+      SECTORS[next].title,
+    );
 
-    smoothScrollToCard(targetTrackIdx);
+    smoothScrollToCard(
+      targetTrackIdx,
+    );
   };
 
   /* ------------------------------------------------------------------------ */
-  /* Activate sector                                                          */
+  /* Activate a sector                                                        */
   /* ------------------------------------------------------------------------ */
 
-  const handleActivateSector = (realIndex, trackIdx) => {
-    if (realIndex === activeIndex) {
+  const handleActivateSector = (
+    realIndex,
+    trackIdx,
+  ) => {
+    if (
+      realIndex ===
+      activeIndex
+    ) {
       return;
     }
 
-    setActiveIndex(realIndex);
+    setActiveIndex(
+      realIndex,
+    );
 
-    setActiveSector(SECTORS[realIndex].title);
+    setActiveSector(
+      SECTORS[realIndex].title,
+    );
 
-    smoothScrollToCard(trackIdx);
+    smoothScrollToCard(
+      trackIdx,
+    );
 
-    const normalizedTrackIdx = MID_COPY * LEN + realIndex;
+    const normalizedTrackIdx =
+      MID_COPY * LEN +
+      realIndex;
 
-    if (trackIdx !== normalizedTrackIdx) {
-      window.clearTimeout(handleActivateSector._normT);
+    if (
+      trackIdx !==
+      normalizedTrackIdx
+    ) {
+      window.clearTimeout(
+        handleActivateSector._normT,
+      );
 
-      handleActivateSector._normT = window.setTimeout(() => {
-        jumpToCard(normalizedTrackIdx);
-      }, 400);
+      handleActivateSector._normT =
+        window.setTimeout(
+          () => {
+            jumpToCard(
+              normalizedTrackIdx,
+            );
+          },
+          400,
+        );
     }
   };
 
@@ -1136,45 +1420,76 @@ export default function Sectors() {
   /* Open sector modal                                                        */
   /* ------------------------------------------------------------------------ */
 
-  const handleOpenSector = (sector, realIndex, trackIdx) => {
-    setActiveIndex(realIndex);
+  const handleOpenSector = (
+    sector,
+    realIndex,
+    trackIdx,
+  ) => {
+    setActiveIndex(
+      realIndex,
+    );
 
-    setActiveSector(sector.title);
+    setActiveSector(
+      sector.title,
+    );
 
-    const normalizedTrackIdx = MID_COPY * LEN + realIndex;
+    const normalizedTrackIdx =
+      MID_COPY * LEN +
+      realIndex;
 
-    if (trackIdx === normalizedTrackIdx) {
-      smoothScrollToCard(trackIdx);
+    if (
+      trackIdx ===
+      normalizedTrackIdx
+    ) {
+      smoothScrollToCard(
+        trackIdx,
+      );
     } else {
-      jumpToCard(normalizedTrackIdx);
+      jumpToCard(
+        normalizedTrackIdx,
+      );
     }
 
-    window.clearTimeout(handleOpenSector._t);
+    window.clearTimeout(
+      handleOpenSector._t,
+    );
 
-    handleOpenSector._t = window.setTimeout(() => {
-      setOpenSector(sector);
-    }, 260);
+    handleOpenSector._t =
+      window.setTimeout(
+        () => {
+          setOpenSector(
+            sector,
+          );
+        },
+        260,
+      );
   };
-
-  /* ------------------------------------------------------------------------ */
-  /* Render cards                                                             */
-  /* ------------------------------------------------------------------------ */
-
-  const renderedCards = Array.from({ length: TOTAL }, (_, i) => {
-    const realIndex = i % LEN;
-
-    return {
-      key: `${SECTORS[realIndex].title}-${i}`,
-      realIndex,
-      trackIdx: i,
-      sector: SECTORS[realIndex],
-      isActive: realIndex === activeIndex,
-    };
-  });
 
   /* ------------------------------------------------------------------------ */
   /* Render                                                                   */
   /* ------------------------------------------------------------------------ */
+
+  const renderedCards =
+    Array.from(
+      {
+        length: TOTAL,
+      },
+      (_, i) => {
+        const realIndex =
+          i % LEN;
+
+        return {
+          key: `${SECTORS[realIndex].title}-${i}`,
+          realIndex,
+          trackIdx: i,
+          sector:
+            SECTORS[realIndex],
+          isActive:
+            realIndex ===
+            activeIndex,
+        };
+      },
+    );
 
   return (
     <main
@@ -1200,9 +1515,9 @@ export default function Sectors() {
         lg:scroll-mt-20
       "
     >
-      {/* ==================================================================== */}
-      {/* Heading                                                              */}
-      {/* ==================================================================== */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Heading                                                            */}
+      {/* ------------------------------------------------------------------ */}
 
       <motion.div
         initial={{
@@ -1219,7 +1534,12 @@ export default function Sectors() {
         }}
         transition={{
           duration: 0.7,
-          ease: [0.22, 1, 0.36, 1],
+          ease: [
+            0.22,
+            1,
+            0.36,
+            1,
+          ],
         }}
         className="
           w-full
@@ -1236,14 +1556,15 @@ export default function Sectors() {
             text-neutral-900
 
             sm:text-4xl
-
             md:text-5xl
           "
         >
           Our Industries
           <br />
+
           <span className="text-neutral-700">
-            Diverse industries. One shared vision.
+            Diverse industries. One
+            shared vision.
           </span>
         </h1>
 
@@ -1261,18 +1582,29 @@ export default function Sectors() {
             sm:leading-7
           "
         >
-          We bring together diverse businesses across agriculture, healthcare,
-          finance, real estate, hospitality, entertainment, and natural
-          resources—driving innovation and creating sustainable value across
-          markets.
+          We bring together diverse
+          businesses across agriculture,
+          healthcare, finance, real estate,
+          hospitality, entertainment, and
+          natural resources—driving
+          innovation and creating
+          sustainable value across markets.
         </p>
       </motion.div>
 
-      {/* ==================================================================== */}
-      {/* Carousel                                                             */}
-      {/* ==================================================================== */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Carousel                                                           */}
+      {/* ------------------------------------------------------------------ */}
 
-      <div className="relative mt-12 w-full sm:mt-16">
+      <div
+        className="
+          relative
+          mt-12
+          w-full
+
+          sm:mt-16
+        "
+      >
         <div
           ref={trackRef}
           className="
@@ -1293,22 +1625,42 @@ export default function Sectors() {
           "
         >
           {renderedCards.map(
-            ({ key, sector, isActive, trackIdx, realIndex }) => (
-              <div key={key} className="flex-shrink-0">
+            ({
+              key,
+              sector,
+              isActive,
+              trackIdx,
+              realIndex,
+            }) => (
+              <div
+                key={key}
+                className="flex-shrink-0"
+              >
                 <SectorCard
                   sector={sector}
                   isActive={isActive}
-                  onActivate={() => handleActivateSector(realIndex, trackIdx)}
-                  onOpen={() => handleOpenSector(sector, realIndex, trackIdx)}
+                  onActivate={() =>
+                    handleActivateSector(
+                      realIndex,
+                      trackIdx,
+                    )
+                  }
+                  onOpen={() =>
+                    handleOpenSector(
+                      sector,
+                      realIndex,
+                      trackIdx,
+                    )
+                  }
                 />
               </div>
             ),
           )}
         </div>
 
-        {/* ================================================================== */}
-        {/* Controls                                                            */}
-        {/* ================================================================== */}
+        {/* ---------------------------------------------------------------- */}
+        {/* Controls                                                          */}
+        {/* ---------------------------------------------------------------- */}
 
         <div
           className="
@@ -1322,11 +1674,13 @@ export default function Sectors() {
             sm:gap-6
           "
         >
-          {/* Previous */}
-
           <button
             type="button"
-            onClick={() => goTo(activeIndex - 1)}
+            onClick={() =>
+              goTo(
+                activeIndex - 1,
+              )
+            }
             aria-label="Previous sector"
             className="
               flex
@@ -1350,10 +1704,11 @@ export default function Sectors() {
               sm:w-10
             "
           >
-            <ChevronLeft className="h-5 w-5" strokeWidth={1.75} />
+            <ChevronLeft
+              className="h-5 w-5"
+              strokeWidth={1.75}
+            />
           </button>
-
-          {/* Dots */}
 
           <div
             className="
@@ -1364,13 +1719,21 @@ export default function Sectors() {
               sm:gap-2
             "
           >
-            {SECTORS.map((sector, index) => (
-              <button
-                key={sector.title}
-                type="button"
-                onClick={() => goTo(index)}
-                aria-label={`Go to ${sector.title}`}
-                className={`
+            {SECTORS.map(
+              (
+                sector,
+                index,
+              ) => (
+                <button
+                  key={
+                    sector.title
+                  }
+                  type="button"
+                  onClick={() =>
+                    goTo(index)
+                  }
+                  aria-label={`Go to ${sector.title}`}
+                  className={`
                     h-1.5
                     flex-shrink-0
                     rounded-full
@@ -1378,20 +1741,24 @@ export default function Sectors() {
                     duration-300
 
                     ${
-                      index === activeIndex
+                      index ===
+                      activeIndex
                         ? "w-6 bg-[#0a3448]"
                         : "w-1.5 bg-neutral-300 hover:bg-neutral-400"
                     }
                   `}
-              />
-            ))}
+                />
+              ),
+            )}
           </div>
-
-          {/* Next */}
 
           <button
             type="button"
-            onClick={() => goTo(activeIndex + 1)}
+            onClick={() =>
+              goTo(
+                activeIndex + 1,
+              )
+            }
             aria-label="Next sector"
             className="
               flex
@@ -1415,20 +1782,25 @@ export default function Sectors() {
               sm:w-10
             "
           >
-            <ChevronRight className="h-5 w-5" strokeWidth={1.75} />
+            <ChevronRight
+              className="h-5 w-5"
+              strokeWidth={1.75}
+            />
           </button>
         </div>
       </div>
 
-      {/* ==================================================================== */}
-      {/* Modal                                                                */}
-      {/* ==================================================================== */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Modal                                                              */}
+      {/* ------------------------------------------------------------------ */}
 
       <AnimatePresence>
         {openSector && (
           <SectorModal
             sector={openSector}
-            onClose={() => setOpenSector(null)}
+            onClose={() =>
+              setOpenSector(null)
+            }
           />
         )}
       </AnimatePresence>
