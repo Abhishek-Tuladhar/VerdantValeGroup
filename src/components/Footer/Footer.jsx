@@ -4,7 +4,7 @@ import { Heart, X } from "lucide-react";
 const POLICY_CONTENT = {
   privacy: {
     title: "Privacy Policy",
-    date: "Last Updated: January 2025",
+    date: "Last Updated: September 2026",
     sections: [
       {
         title: "1. Information We Collect",
@@ -62,7 +62,7 @@ const POLICY_CONTENT = {
 
   terms: {
     title: "Terms of Service",
-    date: "Effective: January 2025",
+    date: "Effective: September 2026",
     sections: [
       {
         title: "1. Acceptance of Terms",
