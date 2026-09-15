@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://verdantvalegroup.vercel.app/sitemap.xml
+Sitemap: https://verdantvalegrp.com/sitemap.xml
