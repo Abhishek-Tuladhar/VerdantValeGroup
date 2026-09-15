@@ -6,6 +6,7 @@ import IntroScreen from "./components/Introscreen/Introscreen";
 import AboutUs from "./Page/AboutUs/AboutUs";
 import OurMission from "./Page/OurMission/OurMission";
 import Sectors from "./Page/Sectors/Sectors";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   useEffect(() => {
@@ -22,6 +23,8 @@ function App() {
         <OurMission />
         <Sectors />
       </ActiveSectorProvider>
+
+      <Footer />
     </IntroScreen>
   );
 }
